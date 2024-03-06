@@ -1,20 +1,39 @@
 #include <LiquidCrystal_I2C.h>
-
 LiquidCrystal_I2C lcd(0x27, 16, 2); //(F3)
 void setup(){	
-	lcd.init()
+	lcd.init();
 	lcd.backlight();
-
+  
 }
 
 
 void loop()
 {
-  lcd.clear();                 
+  lcd.clear();  
+  ShowInfoLcd(1,2,3);
+  delay(5000);
+  lcd.clear();  
   lcd.setCursor(0, 0);         
   lcd.print("nigger");        
   lcd.setCursor(2, 1);         
   lcd.print("I_love_niggers"); 
   delay(2000);                 
+  
+}
+
+void ShowInfoLcd(int are, int you, int ready){ 
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("are|you|ready");
+  lcd.setCursor(1,1);
+  lcd.print(are);  
+  lcd.setCursor(2,1);
+  lcd.print(" | "); 
+  lcd.setCursor(5,1);
+  lcd.print(you); 
+  lcd.setCursor(6,1);
+  lcd.print(" | ");  
+  lcd.setCursor(10,1);
+  lcd.print(ready); 
 
 }
