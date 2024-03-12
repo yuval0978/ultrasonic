@@ -1,0 +1,100 @@
+#include <LiquidCrystal_I2C.h>
+
+#define trigPin 9
+#define echoPin 10
+int blue_led_pin;//crate integer varieble for blue_led_pin
+int buzzer_pin;//crate integer varieble for buzzer pin
+int led_pin_red;
+
+LiquidCrystal_I2C lcd(0x27, 16, 2); //(F3)LiquidCrystal_I2C lcd(0x27, 16, 2); //(F3)
+
+void setup(){
+  pinMode(led_pin_red, OUTPUT);  
+  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
+  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+  Serial.begin(9600);
+  blue_led_pin = 8;
+  led_pin_red = 4;
+  pinMode(blue_led_pin, OUTPUT);
+  buzzer_pin = 4;//set buzzer pin to pin 4
+  pinMode(buzzer_pin, OUTPUT);//set buzzer pin to output
+  lcd.init();
+	lcd.backlight();
+  Serial.println("Setup finished");
+}
+
+  void LCD(bool REDstat, bool BLUEstat, int dist){ 
+  if(REDstat){
+  lcd.setCursor(0, 0);         
+  lcd.print("RED");
+  lcd.setCursor(0, 1);         
+  lcd.print(" on");
+  Serial.println("ON");
+  lcd.setCursor(11, 0);         
+  lcd.print(" BLUE");
+  lcd.setCursor(11, 1);         
+  lcd.print(" OFF");
+  }
+  else{
+  lcd.setCursor(0, 0);         
+  lcd.print("RED");
+  lcd.setCursor(0, 1); 
+  lcd.print("off");
+  Serial.println("OFF");
+  lcd.setCursor(12, 0);         
+  lcd.print("BLUE");
+  lcd.setCursor(12, 1);         
+  lcd.print(" ON");
+
+  }
+  lcd.setCursor(3,1);
+  lcd.print(" | ");
+  lcd.setCursor(3,0);
+  lcd.print(" | "); 
+  lcd.setCursor(9,1);
+  lcd.print(" | ");
+  lcd.setCursor(9,0);
+  lcd.print(" | ");
+  lcd.setCursor(5,0);
+  lcd.print("dist");
+  lcd.setCursor(5,1);
+  lcd.print(dist);           
+
+
+
+
+
+}
+
+
+int ultra(){
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  long duration = pulseIn(echoPin, HIGH);
+  // Calculating the distance
+  int distance = duration * 0.034 / 2;
+  return distance;
+}
+
+
+void loop(){
+  
+  delay(1000);
+  Serial.println(ultra());
+   if(ultra()>50){;
+    digitalWrite(led_pin_red, LOW);
+    digitalWrite(blue_led_pin, HIGH);
+    noTone(buzzer_pin);//finish buzzer   
+    LCD(0, 1, ultra());
+  }else{;
+    LCD(1, 0, ultra());
+    digitalWrite(led_pin_red, HIGH);
+    digitalWrite(blue_led_pin, LOW);
+    tone(buzzer_pin, 400);//start buzzer pin4 400hz                   
+  }
+}
